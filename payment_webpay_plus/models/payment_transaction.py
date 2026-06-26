@@ -63,7 +63,12 @@ class PaymentTransaction(models.Model):
     @api.model
     def _get_tx_from_notification_data(self, provider_code, notification_data):
         """ Override to find the transaction based on Transbank data. """
-        tx = super()._get_tx_from_notification_data(provider_code, notification_data)
+        tx = self.env['payment.transaction']
+        try:
+            tx = super()._get_tx_from_notification_data(provider_code, notification_data)
+        except AttributeError:
+            pass
+            
         if provider_code != 'webpay' or len(tx) == 1:
             return tx
 
@@ -111,7 +116,10 @@ class PaymentTransaction(models.Model):
 
     def _process_notification_data(self, notification_data):
         """ Override of payment to process the transaction based on Transbank data. """
-        super()._process_notification_data(notification_data)
+        try:
+            super()._process_notification_data(notification_data)
+        except AttributeError:
+            pass
         if self.provider_code != 'webpay':
             return
             
