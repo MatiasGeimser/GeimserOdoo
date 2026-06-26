@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Método de pago genérico para Webpay -->
+        <record id="payment_method_webpay" model="payment.method">
+            <field name="name">Webpay Plus</field>
+            <field name="code">webpay</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="payment_provider_webpay" model="payment.provider">
+            <field name="name">Webpay Plus</field>
+            <field name="code">webpay</field>
+            <field name="state">test</field>
+            <field name="payment_method_ids" eval="[(6, 0, [ref('payment_webpay_plus.payment_method_webpay')])]"/>
+            <field name="webpay_commerce_code">597055555532</field>
+            <field name="webpay_api_key">579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C</field>
+            <field name="redirect_form_view_id" ref="redirect_form"/>
+        </record>
+    </data>
+</odoo>

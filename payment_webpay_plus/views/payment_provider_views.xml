@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="payment_provider_form_webpay" model="ir.ui.view">
+        <field name="name">payment.provider.form.webpay</field>
+        <field name="model">payment.provider</field>
+        <field name="inherit_id" ref="payment.payment_provider_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='provider_credentials']" position="inside">
+                <group invisible="code != 'webpay'">
+                    <field name="webpay_commerce_code" required="code == 'webpay' and state != 'test'"/>
+                    <field name="webpay_api_key" required="code == 'webpay' and state != 'test'" password="True"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
