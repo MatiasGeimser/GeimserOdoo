@@ -90,6 +90,7 @@ class PaymentTransaction(models.Model):
         try:
             response = requests.put(api_url, headers=headers, timeout=10)
             data = response.json()
+            notification_data['webpay_confirm_data'] = data
             buy_order = data.get('buy_order')
             if not buy_order:
                 # Si falla o es anulación, el PUT podría fallar
@@ -118,21 +119,15 @@ class PaymentTransaction(models.Model):
             self._set_canceled()
             return
             
-        api_url = f"{self.provider_id._get_webpay_api_url()}/{token}"
-        headers = self.provider_id._webpay_get_headers()
+        data = notification_data.get('webpay_confirm_data')
+        if not data:
+            self._set_error(_("Webpay: No se encontró la data de confirmación."))
+            return
+            
+        status = data.get('status')
+        response_code = data.get('response_code')
         
-        try:
-            response = requests.put(api_url, headers=headers, timeout=10)
-            data = response.json()
-            
-            status = data.get('status')
-            response_code = data.get('response_code')
-            
-            if status == 'AUTHORIZED' and response_code == 0:
-                self._set_done()
-            else:
-                self._set_canceled()
-                
-        except Exception as e:
-            _logger.error("Webpay: Error confirmando la transacción con Transbank: %s", e)
-            self._set_error(_("Transbank API Error"))
+        if status == 'AUTHORIZED' and response_code == 0:
+            self._set_done()
+        else:
+            self._set_canceled()
