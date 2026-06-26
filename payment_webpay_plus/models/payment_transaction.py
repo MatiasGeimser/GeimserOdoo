@@ -88,16 +88,18 @@ class PaymentTransaction(models.Model):
         headers = provider._webpay_get_headers()
         
         try:
-            response = requests.put(api_url, headers=headers, timeout=10)
+            response = requests.put(api_url, json={}, headers=headers, timeout=10)
             data = response.json()
             notification_data['webpay_confirm_data'] = data
             buy_order = data.get('buy_order')
             if not buy_order:
-                # Si falla o es anulación, el PUT podría fallar
-                # Si hay TBK_ORDEN_COMPRA en los params de anulación:
                 buy_order = notification_data.get('TBK_ORDEN_COMPRA')
+                if not buy_order:
+                    raise ValidationError(f"Webpay Plus: Falta buy_order. Res: {response.text}")
         except Exception as e:
             buy_order = notification_data.get('TBK_ORDEN_COMPRA')
+            if not buy_order:
+                raise ValidationError(f"Webpay Error HTTP: {str(e)}")
 
         if not buy_order:
             raise ValidationError("Webpay: No se pudo determinar la orden de compra desde el token.")

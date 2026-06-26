@@ -19,5 +19,6 @@ class WebpayController(http.Controller):
             request.env['payment.transaction'].sudo()._handle_notification_data('webpay', post)
         except Exception as e:
             _logger.error("Webpay Plus: Error procesando la notificación: %s", e)
+            return request.make_response(f"<html><body><h1>Debug Webpay Error</h1><p>{str(e)}</p></body></html>")
             
         return request.redirect('/payment/status')
