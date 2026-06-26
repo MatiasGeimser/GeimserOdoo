@@ -16,6 +16,7 @@ It uses the REST API v1.2 to process payments securely.
     'website': 'https://github.com/matiasgeimser/geimserodoo',
     'depends': ['payment', 'website_sale'],
     'data': [
+        'data/currency_data.xml',
         'views/payment_provider_views.xml',
         'views/payment_webpay_templates.xml',
         'data/payment_provider_data.xml',
