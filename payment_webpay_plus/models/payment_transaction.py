@@ -20,10 +20,21 @@ class PaymentTransaction(models.Model):
         base_url = self.provider_id.get_base_url()
         return_url = urls.url_join(base_url, '/payment/webpay/return')
         
-        # Webpay requires integer amount
-        amount = int(self.amount)
+        # Transbank Webpay Plus exige que el monto sea un entero en CLP
+        # Si la moneda de la transacción no es CLP, intentamos convertirla.
+        amount = self.amount
         if self.currency_id.name != 'CLP':
-            raise ValidationError(_("Webpay Plus solo soporta pagos en CLP."))
+            clp_currency = self.env['res.currency'].search([('name', '=', 'CLP')], limit=1)
+            if not clp_currency:
+                raise ValidationError(_("La moneda CLP no está activa en el sistema. Debe activarla para procesar pagos con Webpay."))
+            
+            # Convertir el monto de la moneda actual a CLP usando la tasa del día
+            company = self.env.company or self.provider_id.company_id
+            amount = self.currency_id._convert(
+                self.amount, clp_currency, company, fields.Date.context_today(self)
+            )
+            
+        amount = int(amount)
 
         payload = {
             "buy_order": self.reference[:26], # Webpay max length is 26
