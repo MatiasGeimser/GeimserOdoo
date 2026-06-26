@@ -3,7 +3,7 @@ import logging
 import requests
 from werkzeug import urls
 
-from odoo import _, api, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
