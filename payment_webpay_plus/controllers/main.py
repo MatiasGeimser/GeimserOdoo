@@ -16,7 +16,8 @@ class WebpayController(http.Controller):
         
         # Odoo 16+ maneja la notificación a través del entorno de transacción
         try:
-            request.env['payment.transaction'].sudo()._handle_notification_data('webpay', post)
+            tx_sudo = request.env['payment.transaction'].sudo()._get_tx_from_notification_data('webpay', post)
+            tx_sudo._process_notification_data(post)
         except Exception as e:
             _logger.error("Webpay Plus: Error procesando la notificación: %s", e)
             return request.make_response(f"<html><body><h1>Debug Webpay Error</h1><p>{str(e)}</p></body></html>")
