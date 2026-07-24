@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Webpay Plus (Transbank) Payment Provider',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.0.1',
     'category': 'Accounting/Payment Providers',
     'sequence': 350,
     'summary': 'A payment provider for Webpay Plus (Transbank) in Chile',
