@@ -18,6 +18,10 @@ class WebpayController(http.Controller):
         try:
             tx_sudo = request.env['payment.transaction'].sudo()._get_tx_from_notification_data('webpay', post)
             tx_sudo._process_notification_data(post)
+            # Finalize the Odoo side of an authorized transaction.  Marking the
+            # transaction as done alone does not confirm the linked sales order
+            # or create its accounting payment.
+            tx_sudo._post_process()
         except Exception as e:
             _logger.error("Webpay Plus: Error procesando la notificación: %s", e)
             return request.make_response(f"<html><body><h1>Debug Webpay Error</h1><p>{str(e)}</p></body></html>")
