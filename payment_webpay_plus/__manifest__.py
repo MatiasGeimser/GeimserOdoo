@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Webpay Plus (Transbank) Payment Provider',
-    'version': '19.0.1.0.1',
+    'version': '19.0.1.0.2',
     'category': 'Accounting/Payment Providers',
     'sequence': 350,
     'summary': 'A payment provider for Webpay Plus (Transbank) in Chile',
@@ -14,7 +14,7 @@ It uses the REST API v1.2 to process payments securely.
     """,
     'author': 'Geimser',
     'website': 'https://github.com/matiasgeimser/geimserodoo',
-    'depends': ['payment', 'website_sale'],
+    'depends': ['payment', 'website_sale', 'account_payment'],
     'data': [
         'data/currency_data.xml',
         'views/payment_provider_views.xml',
@@ -22,5 +22,7 @@ It uses the REST API v1.2 to process payments securely.
         'data/payment_provider_data.xml',
     ],
     'application': False,
+    'post_init_hook': 'post_init_hook',
+    'uninstall_hook': 'uninstall_hook',
     'license': 'LGPL-3',
 }
